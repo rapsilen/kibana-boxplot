@@ -1,0 +1,44 @@
+<div class="kuiSideBarSection">
+  <div class="kuiSideBarFormRow">
+    <label class="kuiSideBarFormRow__label" for="addTooltip">
+      Show Tooltips
+    </label>
+    <div class="kuiSideBarFormRow__control">
+      <input class="kuiCheckBox" id="addTooltip" type="checkbox" ng-model="editorState.params.addTooltip">
+    </div>
+  </div>
+
+  <div class="kuiSideBarFormRow">
+    <label class="kuiSideBarFormRow__label" for="colorSchema">
+      Color Schema
+    </label>
+    <div class="kuiSideBarFormRow__control">
+      <select
+        id="colorSchema"
+        class="form-control"
+        ng-model="editorState.params.colorSchema"
+        ng-options="mode for mode in config.collections.colorSchemas"
+      ></select>
+    </div>
+  </div>
+
+
+  <!-- div class="kuiSideBarFormRow">
+    <label class="kuiSideBarFormRow__label" for="showLabel">
+      Show Label
+    </label>
+    <div class="kuiSideBarFormRow__control">
+      <input class="kuiCheckBox" id="showLabel" type="checkbox" ng-model="editorState.params.showLabel">
+    </div>
+  </div>
+  <--->
+
+  <div class="kuiSideBarFormRow">
+    <label class="kuiSideBarFormRow__label" for="defaultOrder">
+      Order by 100th percentile
+    </label>
+    <div class="kuiSideBarFormRow__control">
+      <input class="kuiCheckBox" id="defaultOrder" type="checkbox" ng-model="editorState.params.defaultOrder">
+    </div>
+  </div>
+</div>
