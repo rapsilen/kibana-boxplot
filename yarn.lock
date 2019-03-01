@@ -221,10 +221,6 @@ argparse@^1.0.7:
   dependencies:
     sprintf-js "~1.0.2"
 
-argv-split@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/argv-split/-/argv-split-2.0.1.tgz#be264117790dbd5ccd63ec3f449a1804814ac4c5"
-
 arr-diff@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/arr-diff/-/arr-diff-1.1.0.tgz#687c32758163588fef7de7b36fabe495eb1a399a"
@@ -994,6 +990,13 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+echarts@^4.1.0:
+  version "4.1.0"
+  resolved "http://registry.npm.taobao.org/echarts/download/echarts-4.1.0.tgz#d588c95f73c1a9928b9c73d5b769751c3185bcdc"
+  integrity sha1-1YjJX3PBqZKLnHPVt2l1HDGFvNw=
+  dependencies:
+    zrender "4.0.4"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -4151,3 +4154,8 @@ yazl@^2.1.0:
   resolved "https://registry.yarnpkg.com/yazl/-/yazl-2.4.3.tgz#ec26e5cc87d5601b9df8432dbdd3cd2e5173a071"
   dependencies:
     buffer-crc32 "~0.2.3"
+
+zrender@4.0.4:
+  version "4.0.4"
+  resolved "http://registry.npm.taobao.org/zrender/download/zrender-4.0.4.tgz#910e60d888f00c9599073f23758dd23345fe48fd"
+  integrity sha1-kQ5g2IjwDJWZBz8jdY3SM0X+SP0=
