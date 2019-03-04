@@ -177,6 +177,7 @@ export class BoxPlotVisualization {
             name: c.getCategoryName(),
             type: 'pictorialBar',
             symbolPosition: 'end',
+            symbolOffset: [0, '-50%'],
             symbolSize: 8,
             barGap: '35%',
             data: c.getSeriesDatas().getOutLiers()

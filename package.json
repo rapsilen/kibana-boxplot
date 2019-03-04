@@ -31,6 +31,7 @@
     "expect.js": "^0.3.1"
   },
   "dependencies": {
-    "echarts": "^4.1.0"
+    "echarts": "^4.1.0",
+    "eslint-plugin-no-unsanitized": "^3.0.2"
   }
 }
