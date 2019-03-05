@@ -5,7 +5,7 @@ uiModules.get('kibana/table_vis')
   .directive('boxplotVisParams', function () {
     return {
       restrict: 'E',
-      template:boxPlotVisParamsTemplate,
+      template: boxPlotVisParamsTemplate,
       link: function ($scope, $element) {
         $scope.config = $scope.vis.type.editorConfig;
       }

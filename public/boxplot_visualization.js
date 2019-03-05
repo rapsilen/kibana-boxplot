@@ -1,7 +1,5 @@
-'use strict';
-import React from 'react';
-import d3 from "d3";
-import boxPlot from './BoxPlotElement';
+import 'd3';
+import BoxPlot from './BoxPlotElement';
 import chart from 'echarts';
 import Series from './SeriesElement';
 import Category from './CategoryElement';
@@ -21,7 +19,7 @@ export class BoxPlotVisualization {
     this._dom = node;
     // console.log(this._vis.params);
     this._mychart = chart.init(this._dom, this.getThemeStyle());
-    this._opition = {};
+    this._option = {};
 
 
   }
@@ -30,22 +28,7 @@ export class BoxPlotVisualization {
 
     this._isEmptyData = !(data && data.tables.length);
 
-    // var echart_data = this.generate(data);
-
-    this._tableCnt = data.tables.length;
     if ((!this._isEmptyData)) {
-      if (status.params) {
-        if (this._vis.params.defaultOrder) {
-          this._vis.aggs.forEach(function (d) {
-            if (d.__type.name === 'terms') {
-              // default setting for terms
-              d.params.order.val = 'desc';
-              d.params.orderBy = '1.100';
-            }
-          })
-        }
-      }
-
       if (status.data || status.resize || status.params) {
         if (status.data) {
           this.generate(data);
@@ -53,7 +36,7 @@ export class BoxPlotVisualization {
         if (status.params) {
           this.updateTheme();
         }
-        this._mychart.setOption(this._opition);
+        this._mychart.setOption(this._option);
         this._mychart.resize();
       }
     }
@@ -68,18 +51,20 @@ export class BoxPlotVisualization {
 
   generate(RawData) {
     this._mychart.clear();
-    this.initOpitionSet();
+    this.initOptionSet();
 
-    let level = this._vis.aggs.raw.length - 1;
-    let dataConfig = this._vis.aggs.raw;
-    let table = RawData.tables[0];
+    const level = this._vis.aggs.raw.length - 1;
+    const dataConfig = this._vis.aggs.raw;
+    const table = RawData.tables[0];
+    this._option.xAxis.name = getTitle(RawData.tables[0].columns[0]);
+
 
     switch (level) {
       case 1:
-        let seriesData = new Series();
+        const seriesData = new Series();
         table.rows.forEach(function (d) {
-          let seriesKey = getString(d[0], dataConfig[1].__type.name);
-          let box = new boxPlot(d[1], d[2], d[3], d[4], d[5]);
+          const seriesKey = getString(d[0], dataConfig[1].__type.name);
+          const box = new BoxPlot(d[1], d[2], d[3], d[4], d[5]);
           seriesData.setAxisData(seriesKey);
           seriesData.setBoxData(box.getBoxplotData());
           box.getOutlierData().forEach(function (outlier) {
@@ -88,12 +73,12 @@ export class BoxPlotVisualization {
             }
           });
         });
-        this._opition.xAxis.data = seriesData.getAxisData();
-        this._opition.series = [
+        this._option.xAxis.data = seriesData.getAxisData();
+        this._option.series = [
           {
-            type: "boxplot",
+            type: 'boxplot',
             data: seriesData.getBoxData(),
-            tooltip: {formatter: formatter}
+            tooltip: { formatter: formatter }
           },
           {
             type: 'pictorialBar',
@@ -105,17 +90,18 @@ export class BoxPlotVisualization {
         ];
         break;
       case 2:
-        let category = [];
+        const category = [];
+        const legendName = getTitle(RawData.tables[0].columns[1]);
 
-
+        // loading raw data
         table.rows.forEach(function (d) {
-          let seriesKey = getString(d[0], dataConfig[1].__type.name);
-          let categoryKey = getString(d[1], dataConfig[2].__type.name);
-          let box = new boxPlot(d[2], d[3], d[4], d[5], d[6]);
+          const seriesKey = getString(d[0], dataConfig[1].__type.name);
+          const categoryKey = getString(d[1], dataConfig[2].__type.name);
+          const box = new BoxPlot(d[2], d[3], d[4], d[5], d[6]);
 
           if (category.length === 0) {
-            let seriesData = new Series();
-            let categoryData = new Category();
+            const seriesData = new Series();
+            const categoryData = new Category();
             seriesData.setAxisData(seriesKey);
             seriesData.setBoxData(box.getBoxplotData());
             box.getOutlierData().forEach(function (outlier) {
@@ -126,10 +112,10 @@ export class BoxPlotVisualization {
             categoryData.setValue(categoryKey, seriesData);
             category.push(categoryData);
           } else {
-            let c_index = getCategoryIndex(category, categoryKey);
-            if (c_index === -1) {
-              let seriesData = new Series();
-              let categoryData = new Category();
+            const cIndex = getCategoryIndex(category, categoryKey);
+            if (cIndex === -1) {
+              const seriesData = new Series();
+              const categoryData = new Category();
               seriesData.setAxisData(seriesKey);
               seriesData.setBoxData(box.getBoxplotData());
               box.getOutlierData().forEach(function (outlier) {
@@ -140,7 +126,7 @@ export class BoxPlotVisualization {
               categoryData.setValue(categoryKey, seriesData);
               category.push(categoryData);
             } else {
-              let seriesData = category[c_index].getSeriesDatas();
+              const seriesData = category[cIndex].getSeriesDatas();
               seriesData.setAxisData(seriesKey);
               seriesData.setBoxData(box.getBoxplotData());
               box.getOutlierData().forEach(function (outlier) {
@@ -148,32 +134,33 @@ export class BoxPlotVisualization {
                   seriesData.setOutLiers(seriesKey, outlier);
                 }
               });
-              category[c_index].setSeriesValue(seriesData);
+              category[cIndex].setSeriesValue(seriesData);
             }
           }
         });
         // prepare data
         this.prepareData(category);
+        console.log(category, '<<<<<<<<<<<<<<<<');
 
         // plot chart
         // init XAxis data
-        this._opition.xAxis.data = category[0].getSeriesDatas().getAxisData();
+        this._option.xAxis.data = category[0].getSeriesDatas().getAxisData();
 
         // init boxplot data
         category.forEach(function (c) {
-          this._opition.series.push(
+          this._option.series.push(
             {
               name: c.getCategoryName(),
-              type: "boxplot",
+              type: 'boxplot',
               data: c.getSeriesDatas().getBoxData(),
-              tooltip: {formatter: formatter}
+              tooltip: { formatter: formatter }
             }
           );
         }, this);
 
         // init outlier data
         category.forEach(function (c) {
-          this._opition.series.push({
+          this._option.series.push({
             name: c.getCategoryName(),
             type: 'pictorialBar',
             symbolPosition: 'end',
@@ -185,15 +172,17 @@ export class BoxPlotVisualization {
         }, this);
 
         // init legend data
-        this._opition.legend.data = category.map(function (c) {
+        this._option.legend.data = category.map(function (c) {
           return c.getCategoryName();
         });
+        this._option.legend.formatter = legendName + ': {name}';
         break;
     }
   }
 
   prepareData(Category) {
-    let axisDataMax = [], seriesDataCnt = 0;
+    let axisDataMax = [];
+    let seriesDataCnt = 0;
     Category.forEach(function (c) {
       if (axisDataMax.length < c.getSeriesDatas().getAxisData().length) {
         axisDataMax = c.getSeriesDatas().getAxisData();
@@ -201,11 +190,11 @@ export class BoxPlotVisualization {
       seriesDataCnt += c.getSeriesDatas().getAxisData().length;
     });
     if (Category.length * axisDataMax.length !== seriesDataCnt) {
-      for (let c in Category) {
+      for (const c in Category) {
         if (axisDataMax.length !== Category[c].getSeriesDatas().getAxisData().length) {
-          let MismatchedAxisData = Category[c].getSeriesDatas().getAxisData();
-          let MismatchedBoxData = Category[c].getSeriesDatas().getBoxData();
-          for (let d in axisDataMax) {
+          const MismatchedAxisData = Category[c].getSeriesDatas().getAxisData();
+          const MismatchedBoxData = Category[c].getSeriesDatas().getBoxData();
+          for (const d in axisDataMax) {
             if (MismatchedAxisData.indexOf(axisDataMax[d]) === -1) {
               // insert empty data & make sure series data is matched with axis data
               MismatchedAxisData.splice(d, 0, axisDataMax[d]);
@@ -217,26 +206,26 @@ export class BoxPlotVisualization {
     }
   }
 
-  initOpitionSet() {
-    this._opition = {
+  initOptionSet() {
+    this._option = {
       title: [
         {
-          // text: "Michelson-Morley Experiment",
-          left: "auto"
+          left: 'auto'
         },
         {
-          text: "upper: MIN [Q3 + 1.5 * IQR, MAXIMUM]; lower: MAX [Q1 - 1.5 * IQR, MINIMUM]",
-          borderColor: "#999",
+          text: 'upper: MIN [Q3 + 1.5 * IQR, MAXIMUM]; lower: MAX [Q1 - 1.5 * IQR, MINIMUM]',
+          borderColor: '#999',
           borderWidth: 1,
           textStyle: {
             fontSize: 11
           },
-          left: "10%",
-          top: "95%"
+          left: '10%',
+          top: '95%'
         }],
 
       legend: {
-        // y: '10%',
+        left: '10%',
+        right: '10%'
       },
 
       toolbox: {
@@ -272,26 +261,27 @@ export class BoxPlotVisualization {
       ],
 
       tooltip: {
-        trigger: "item",
+        trigger: 'item',
         axisPointer: {
-          type: "shadow"
+          type: 'shadow'
         }
       },
 
       grid: {
-        left: "10%",
-        right: "10%",
-        bottom: "15%",
-        width: "auto",
-        height: "auto"
+        left: '10%',
+        right: '10%',
+        top: '10%',
+        bottom: '15%',
+        width: 'auto',
+        height: 'auto'
       },
 
       yAxis: {
-        type: "value",
+        type: 'value',
       },
 
       xAxis: {
-        type: "category",
+        type: 'category',
         data: [],
         boundaryGap: true,
         splitArea: {
@@ -304,8 +294,13 @@ export class BoxPlotVisualization {
           },
           interval: 0
         },
+        nameLocation: 'center',
+        nameGap: 20,
         splitLine: {
           show: false
+        },
+        nameTextStyle: {
+          fontSize: 16
         }
       },
 
@@ -322,17 +317,17 @@ export class BoxPlotVisualization {
 
   getThemeStyle() {
     switch (this._vis.params.colorSchema) {
-      case "Roma":
+      case 'Roma':
         return 'roma';
-      case "Vintage":
+      case 'Vintage':
         return 'vintage';
-      case "Dark":
+      case 'Dark':
         return 'dark';
-      case "Infographic":
+      case 'Infographic':
         return 'infographic';
-      case "Shine":
+      case 'Shine':
         return 'shine';
-      case "Macarons":
+      case 'Macarons':
         return 'Macarons';
       default:
         return '';
@@ -341,44 +336,53 @@ export class BoxPlotVisualization {
 }
 
 function getString(Str, StrType) {
-  let format = d3.time.format("%Y-%m-%d %H:00");
+  const format = d3.time.format('%Y-%m-%d %H:00');
   switch (StrType) {
-    case "date_histogram":
+    case 'date_histogram':
       return format(new Date(Str));
     default:
       return Str;
   }
 }
 
+function getTitle(Obj) {
+  const objType = Obj.aggConfig.__type.name;
+  switch (objType) {
+    case 'date_histogram':
+      return Obj.title.split(' ')[0];
+    default:
+      return Obj.title.split(':')[0];
+  }
+}
 
 function formatter(param) {
   // console.log(param);
-  if (param.seriesName.indexOf("series") === 0) {
+  if (param.seriesName.indexOf('series') === 0) {
     return [
-      param.name + ": ",
-      "upper: " + param.data[5],
-      "Q3: " + param.data[4],
-      "median: " + param.data[3],
-      "Q1: " + param.data[2],
-      "lower: " + param.data[1]
-    ].join("<br/>");
+      param.name + ': ',
+      'upper: ' + param.data[5],
+      'Q3: ' + param.data[4],
+      'median: ' + param.data[3],
+      'Q1: ' + param.data[2],
+      'lower: ' + param.data[1]
+    ].join('<br/>');
 
   } else {
     return [
-      param.seriesName + "",
-      param.name + ": ",
-      "upper: " + param.data[5],
-      "Q3: " + param.data[4],
-      "median: " + param.data[3],
-      "Q1: " + param.data[2],
-      "lower: " + param.data[1]
-    ].join("<br/>");
+      param.seriesName + '',
+      param.name + ': ',
+      'upper: ' + param.data[5],
+      'Q3: ' + param.data[4],
+      'median: ' + param.data[3],
+      'Q1: ' + param.data[2],
+      'lower: ' + param.data[1]
+    ].join('<br/>');
 
   }
 }
 
 function getCategoryIndex(Category, CategoryName) {
-  for (let c in Category) {
+  for (const c in Category) {
     if (Category[c].getCategoryName() === CategoryName) {
       return c;
     }

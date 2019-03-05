@@ -1,12 +1,11 @@
-import './boxplot.less';
 import './boxplot_vis_params';
-import {VisFactoryProvider} from 'ui/vis/vis_factory';
-import {CATEGORY} from 'ui/vis/vis_category';
-import {Schemas} from 'ui/vis/editors/default/schemas';
-import {BoxPlotVisualization} from './boxplot_visualization';
-import {VisTypesRegistryProvider} from 'ui/registry/vis_types';
+import { VisFactoryProvider } from 'ui/vis/vis_factory';
+import { CATEGORY } from 'ui/vis/vis_category';
+import { Schemas } from 'ui/vis/editors/default/schemas';
+import { BoxPlotVisualization } from './boxplot_visualization';
+import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
 import image from './images/icon_boxplot.svg';
-import {Status} from 'ui/vis/update_status';
+import { Status } from 'ui/vis/update_status';
 
 VisTypesRegistryProvider.register(function (Private) {
 
@@ -22,10 +21,10 @@ VisTypesRegistryProvider.register(function (Private) {
     visConfig: {
       defaults: {
         colorSchema: 'Default',
-        reverseColor: false,
-        addTooltip: false,
-        showLabel: true,
-        defaultOrder: true
+        // reverseColor: false,
+        // addTooltip: false,
+        // showLabel: true,
+        // defaultOrder: true
       }
     },
     requiresUpdateStatus: [Status.PARAMS, Status.RESIZE, Status.DATA],
@@ -45,7 +44,7 @@ VisTypesRegistryProvider.register(function (Private) {
           max: 1,
           aggFilter: ['boxplot'],
           defaults: [
-            {schema: 'metric', type: 'boxplot'}
+            { schema: 'metric', type: 'boxplot' }
           ]
         },
         {
