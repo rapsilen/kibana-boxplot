@@ -1,4 +1,5 @@
-import 'd3';
+import * as d3 from 'd3';
+import * as timeFormat from 'd3-time-format';
 import BoxPlot from './BoxPlotElement';
 import chart from 'echarts';
 import Series from './SeriesElement';
@@ -64,7 +65,8 @@ export class BoxPlotVisualization {
       case 1:
         const seriesData = new Series();
         table.rows.forEach(function (d) {
-          const seriesKey = getString(d[0], dataConfig[1].__type.name);
+          console.log(d, RawData.tables[0].columns[0]);
+          const seriesKey = getString(d[0], RawData.tables[0].columns[0]);
           const box = new BoxPlot(d[1], d[2], d[3], d[4], d[5]);
           seriesData.setAxisData(seriesKey);
           seriesData.setBoxData(box.getBoxplotData());
@@ -97,8 +99,10 @@ export class BoxPlotVisualization {
 
         // loading raw data
         table.rows.forEach(function (d) {
-          const seriesKey = getString(d[0], dataConfig[1].__type.name);
-          const categoryKey = getString(d[1], dataConfig[2].__type.name);
+          // console.log('A', RawData.tables[0].columns[0], RawData.tables[0].columns[1]);
+          // console.log('B', d, dataConfig[1],  dataConfig[2]);
+          const seriesKey = getString(d[0], RawData.tables[0].columns[0]);
+          const categoryKey = getString(d[1], RawData.tables[0].columns[1]);
           const box = new BoxPlot(d[2], d[3], d[4], d[5], d[6]);
 
           if (category.length === 0) {
@@ -338,11 +342,28 @@ export class BoxPlotVisualization {
   }
 }
 
-function getString(Str, StrType) {
-  const format = d3.time.format('%Y-%m-%d %H:00');
-  switch (StrType) {
+function getString(Str, Obj) {
+  let format = timeFormat.timeFormat('%Y-%m-%d %H:00');
+  switch (Obj.aggConfig.__type.name) {
     case 'date_histogram':
-      return format(new Date(Str));
+      if (Obj.title.match('month')) {
+        format = timeFormat.timeFormat('%YM%m');
+        return format(new Date(Str));
+      } else {
+        if (Obj.title.match('week')) {
+          const weekNum = timeFormat.timeFormat('%V')(new Date(Str));
+          console.log(weekNum, 'by week');
+          format = timeFormat.timeFormat('%YWW' + weekNum);
+          return format(new Date(Str));
+        } else {
+          if (Obj.title.match('day')) {
+            format = timeFormat.timeFormat('%Y-%m-%d');
+            return format(new Date(Str));
+          } else {
+            return format(new Date(Str));
+          }
+        }
+      }
     default:
       return Str;
   }
