@@ -36,6 +36,7 @@ export class BoxPlotVisualization {
         if (status.params) {
           this.updateTheme();
         }
+        // console.log(JSON.stringify(this._option));
         this._mychart.setOption(this._option);
         this._mychart.resize();
       }
@@ -84,6 +85,7 @@ export class BoxPlotVisualization {
             type: 'pictorialBar',
             symbolPosition: 'end',
             symbolSize: 8,
+            symbolOffset: [0, '-50%'],
             barGap: '35%',
             data: seriesData.getOutLiers()
           }
@@ -226,7 +228,7 @@ export class BoxPlotVisualization {
 
       legend: {
         left: '10%',
-        right: '10%'
+        width: '80%'
       },
 
       toolbox: {
@@ -271,7 +273,7 @@ export class BoxPlotVisualization {
       grid: {
         left: '10%',
         right: '10%',
-        top: '10%',
+        top: '15%',
         bottom: '15%',
         width: 'auto',
         height: 'auto'
