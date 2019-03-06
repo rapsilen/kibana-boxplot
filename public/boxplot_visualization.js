@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import * as timeFormat from 'd3-time-format';
 import BoxPlot from './BoxPlotElement';
 import chart from 'echarts';
@@ -56,7 +55,6 @@ export class BoxPlotVisualization {
     this.initOptionSet();
 
     const level = this._vis.aggs.raw.length - 1;
-    const dataConfig = this._vis.aggs.raw;
     const table = RawData.tables[0];
     this._option.xAxis.name = getTitle(RawData.tables[0].columns[0]);
 
@@ -146,6 +144,13 @@ export class BoxPlotVisualization {
         });
         // prepare data
         this.prepareData(category);
+
+        // need sort raw data in case the category value is date
+        if (RawData.tables[0].columns[1].aggConfig.__type.name === 'date_histogram') {
+          category.sort(function (a, b) {
+            return (new Date(a.getCategoryName()) - new Date(b.getCategoryName()));
+          });
+        }
 
         // plot chart
         // init XAxis data
