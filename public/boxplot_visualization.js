@@ -140,7 +140,6 @@ export class BoxPlotVisualization {
         });
         // prepare data
         this.prepareData(category);
-        console.log(category, '<<<<<<<<<<<<<<<<');
 
         // plot chart
         // init XAxis data
@@ -181,23 +180,25 @@ export class BoxPlotVisualization {
   }
 
   prepareData(Category) {
-    let axisDataMax = [];
+    const axisDataAll = [];
     let seriesDataCnt = 0;
     Category.forEach(function (c) {
-      if (axisDataMax.length < c.getSeriesDatas().getAxisData().length) {
-        axisDataMax = c.getSeriesDatas().getAxisData();
-      }
+      c.getSeriesDatas().getAxisData().forEach(function (d) {
+        if (axisDataAll.indexOf(d) === -1) {
+          axisDataAll.push(d);
+        }
+      });
       seriesDataCnt += c.getSeriesDatas().getAxisData().length;
     });
-    if (Category.length * axisDataMax.length !== seriesDataCnt) {
+    if (Category.length * axisDataAll.length !== seriesDataCnt) {
       for (const c in Category) {
-        if (axisDataMax.length !== Category[c].getSeriesDatas().getAxisData().length) {
+        if (axisDataAll.length !== Category[c].getSeriesDatas().getAxisData().length) {
           const MismatchedAxisData = Category[c].getSeriesDatas().getAxisData();
           const MismatchedBoxData = Category[c].getSeriesDatas().getBoxData();
-          for (const d in axisDataMax) {
-            if (MismatchedAxisData.indexOf(axisDataMax[d]) === -1) {
+          for (const d in axisDataAll) {
+            if (MismatchedAxisData.indexOf(axisDataAll[d]) === -1) {
               // insert empty data & make sure series data is matched with axis data
-              MismatchedAxisData.splice(d, 0, axisDataMax[d]);
+              MismatchedAxisData.splice(d, 0, axisDataAll[d]);
               MismatchedBoxData.splice(d, 0, []);
             }
           }
