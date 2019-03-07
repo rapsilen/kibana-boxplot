@@ -17,7 +17,6 @@ export class BoxPlotVisualization {
 
     this._vis = vis;
     this._dom = node;
-    // console.log(this._vis.params);
     this._mychart = chart.init(this._dom, this.getThemeStyle());
     this._option = {};
 
@@ -97,8 +96,6 @@ export class BoxPlotVisualization {
 
         // loading raw data
         table.rows.forEach(function (d) {
-          // console.log('A', RawData.tables[0].columns[0], RawData.tables[0].columns[1]);
-          // console.log('B', d, dataConfig[1],  dataConfig[2]);
           const seriesKey = getString(d[0], RawData.tables[0].columns[0]);
           const categoryKey = getString(d[1], RawData.tables[0].columns[1]);
           const box = new BoxPlot(d[2], d[3], d[4], d[5], d[6]);
@@ -282,7 +279,7 @@ export class BoxPlotVisualization {
       grid: {
         left: '10%',
         right: '10%',
-        top: '15%',
+        top: '10%',
         bottom: '15%',
         width: 'auto',
         height: 'auto'
