@@ -272,7 +272,7 @@ export class BoxPlotVisualization {
       tooltip: {
         trigger: 'item',
         axisPointer: {
-          type: 'shadow'
+          type: 'cross'
         }
       },
 
